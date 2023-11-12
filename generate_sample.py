@@ -10,7 +10,8 @@ config = dotenv_values(".env")
 
 CHUNK_SIZE = 1024
 
-def _get_available_voices() -> List[any]:
+
+def _get_available_voices() -> List[dict]:
   headers = {
     "accept": "application/json",
     "xi-api-key": config["API_KEY"]
@@ -20,7 +21,8 @@ def _get_available_voices() -> List[any]:
 
   return [v for v in get_response.json()["voices"] if v["category"] == "cloned"]
 
-def _select_parameters(voices: List[any]) -> Tuple[any, str]:
+
+def _select_parameters(voices: List[dict]) -> Tuple[dict, str]:
   questions = [
     inquirer.List(
         "mode",
@@ -44,7 +46,8 @@ def _select_parameters(voices: List[any]) -> Tuple[any, str]:
 
   return [v for v in voices if v["name"] == answers["voice"]][0], prompt
 
-def _query_voice_sample_from_prompt(prompt: str, voice: any):
+
+def _query_voice_sample_from_prompt(prompt: str, voice: dict) -> None:
   headers = {
     "Accept": "audio/mpeg",
     "Content-Type": "application/json",
@@ -73,6 +76,7 @@ def _query_voice_sample_from_prompt(prompt: str, voice: any):
               f.write(chunk)
 
       print("[!] Success: result written in ./result.mp3")
+
 
 if __name__ == '__main__':
   voices = _get_available_voices()
